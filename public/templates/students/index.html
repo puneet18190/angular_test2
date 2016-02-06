@@ -2,6 +2,26 @@
 
 <a href="/#students/new">New Student</a>
 
-<div ng-repeat="s in students">
+<!-- <div ng-repeat="s in students">
 	<a href="/#students/{{s.id}}">{{s.name}}</a>
-</div>
+</div> -->
+
+<table border="1">
+	<tr>
+		<th>Name</th>
+		<th>Phone</th>
+		<th>Address</th>
+		<th>Show</th>
+		<th>Edit</th>
+		<th>Destroy</th>
+	</tr>
+
+	<tr ng-repeat="s in students">
+		<td>{{s.name}}</td>
+		<td>{{s.phone}}</td>
+		<td>{{s.address}}</td>
+		<td><a href="/#students/{{s.id}}">Show</a></td>
+		<td><a href="/#students/{{s.id}}/edit">Edit</a></td>
+		<td ng-click="delete_record(s.id)"><a href="#">Destroy</a></td>
+	</tr>	
+</table>

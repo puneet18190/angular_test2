@@ -26,6 +26,24 @@ class StudentsController < ApplicationController
 	    end
 	end
 
+	def update
+		@student = Student.find(params[:id])
+		if @student.update(student_params)
+	    	render json: {data: @student.as_json, status: "true"}.to_json
+	    else
+	    	render json: {data: @student.errors, status: "false"}.to_json
+	    end
+	end
+
+	def destroy
+		@student = Student.find(params[:id])
+		if @student.delete
+	    	render json: {data: @student.as_json, status: "true"}.to_json
+	    else
+	    	render json: {data: @student.errors, status: "false"}.to_json
+	    end
+	end
+
 	protected
 
 	def student_params

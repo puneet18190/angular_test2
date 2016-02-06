@@ -15,9 +15,17 @@ app.factory("Users", ['$resource', function($resource){
 	})
 }])
 
-app.controller('studentCtrl', ['$scope','User', function($scope, User){
+app.controller('studentCtrl', ['$scope','User','Users', function($scope, User, Users){
 	$scope.students = User.query()
 	$scope.data = "hello world"
+	$scope.delete_record = function(id){
+		console.log("id"+ id)
+		Users.delete({id: id}, function(){
+			console.log("success")
+		}, function(error){
+			console.log(error)
+		})
+	}
 }])
 
 app.controller('studentNewCtrl', ['$scope','User','$location', function($scope, User, $location){
@@ -36,6 +44,19 @@ app.controller("studentShowCtrl", ['$scope', '$routeParams','Users', function($s
 	$scope.data = Users.get({id: $routeParams.id})
 }])
 
+app.controller('studentEditCtrl', ['$scope','Users','$location', '$routeParams', function($scope, Users, $location, $routeParams){
+	$scope.user = Users.get({id: $routeParams.id})
+	$scope.data = "edit page"
+	$scope.update_data = function(){
+		Users.update({student: $scope.user, id: $routeParams.id}, function(){
+			console.log("success")
+			$location.path('/');
+		}, function(error){
+			console.log(error)
+		})
+	}
+}])
+
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
 	$routeProvider.when("/students",{
 		templateUrl: "/templates/students/index.html",
@@ -50,6 +71,11 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 	$routeProvider.when("/students/:id",{
 		templateUrl: "/templates/students/show.html",
 		controller: "studentShowCtrl"
+	});
+
+	$routeProvider.when("/students/:id/edit",{
+		templateUrl: "/templates/students/edit.html",
+		controller: "studentEditCtrl"
 	});
 
 	$routeProvider.otherwise({
