@@ -1,4 +1,4 @@
-var app = angular.module('myapp', ['ngRoute', 'ngResource'])
+var app = angular.module('myapp', ['ngRoute', 'ngResource', 'Devise'])
 
 app.factory('User',['$resource', function($resource){
 	return $resource('/students.json', {}, {
@@ -57,6 +57,40 @@ app.controller('studentEditCtrl', ['$scope','Users','$location', '$routeParams',
 	}
 }])
 
+app.controller("NavCtrl", ['$scope', 'Auth','$location', function($scope, Auth, $location){
+	$scope.signedIn = Auth.isAuthenticated;
+	$scope.logout = Auth.logout;
+
+	Auth.currentUser().then(function (user){
+	    $scope.user = user;
+	});
+
+	$scope.$on('devise:new-registration', function (e, user){
+	    $scope.user = user;
+	});
+
+	$scope.$on('devise:login', function (e, user){
+	    $scope.user = user;
+	});
+
+	$scope.$on('devise:logout', function (e, user){
+	    $scope.user = {};
+	});
+
+	$scope.login = function() {
+	    Auth.login($scope.user).then(function(){
+	      $location.path('/students')
+	    });
+	};
+
+	$scope.register = function() {
+	    Auth.register($scope.user).then(function(){
+	      $location.path('/students')
+	    });
+	};
+	  
+}])
+
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
 	$routeProvider.when("/students",{
 		templateUrl: "/templates/students/index.html",
@@ -78,8 +112,18 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		controller: "studentEditCtrl"
 	});
 
+	$routeProvider.when("/login",{
+		templateUrl: "/templates/students/login.html",
+		controller: "NavCtrl"
+	});
+
+	$routeProvider.when("/register",{
+		templateUrl: "/templates/students/register.html",
+		controller: "NavCtrl"
+	});
+
 	$routeProvider.otherwise({
 		redirectTo: "/students"
-	})
+	});
 	
 }])

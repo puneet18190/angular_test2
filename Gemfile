@@ -48,3 +48,8 @@ end
 gem 'pry'
 gem 'angularjs-rails'
 gem 'responders', '~> 2.0'
+ gem 'devise', '~> 3.4.0'
+
+#  source "https://rails-assets.org" do
+#   gem "rails-assets-angular-devise"
+# end
