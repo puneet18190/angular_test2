@@ -88,7 +88,8 @@ app.controller("NavCtrl", ['$scope', 'Auth','$location','$rootScope', function($
 
 	$scope.register = function() {
 	    Auth.register($scope.user).then(function(){
-	      $location.path('/students')
+	    	$rootScope.loggedInUser = $scope.user;
+	    	$location.path('/students')
 	    });
 	};
 	  
