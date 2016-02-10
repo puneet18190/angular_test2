@@ -1,27 +1,32 @@
-{{data}}
+<div class="panel">
+	<div class="panel-heading">
+        <div class="panel-title">Student List <a href="/#students/new" class="btn btn-primary pull-right" style="color: white">New Student</a></div>
+    </div>     
+    <div style="padding-top:30px" class="panel-body" >
 
-<a href="/#students/new">New Student</a>
+		<!-- {{data}} -->
+		<!-- <div ng-repeat="s in students">
+			<a href="/#students/{{s.id}}">{{s.name}}</a>
+		</div> -->
 
-<!-- <div ng-repeat="s in students">
-	<a href="/#students/{{s.id}}">{{s.name}}</a>
-</div> -->
+		<table class="table table-bordered">
+			<tr>
+				<th>Name</th>
+				<th>Phone</th>
+				<th>Address</th>
+				<th>Show</th>
+				<th>Edit</th>
+				<th>Destroy</th>
+			</tr>
 
-<table border="1">
-	<tr>
-		<th>Name</th>
-		<th>Phone</th>
-		<th>Address</th>
-		<th>Show</th>
-		<th>Edit</th>
-		<th>Destroy</th>
-	</tr>
-
-	<tr ng-repeat="s in students">
-		<td>{{s.name}}</td>
-		<td>{{s.phone}}</td>
-		<td>{{s.address}}</td>
-		<td><a href="/#students/{{s.id}}">Show</a></td>
-		<td><a href="/#students/{{s.id}}/edit">Edit</a></td>
-		<td ng-click="delete_record(s.id)"><a href="#">Destroy</a></td>
-	</tr>	
-</table>
+			<tr ng-repeat="s in students">
+				<td>{{s.name}}</td>
+				<td>{{s.phone}}</td>
+				<td>{{s.address}}</td>
+				<td><a href="/#students/{{s.id}}">Show</a></td>
+				<td><a href="/#students/{{s.id}}/edit">Edit</a></td>
+				<td ng-click="delete_record(s.id)"><a href="#">Destroy</a></td>
+			</tr>	
+		</table>
+	</div>
+</div>

@@ -57,7 +57,7 @@ app.controller('studentEditCtrl', ['$scope','Users','$location', '$routeParams',
 	}
 }])
 
-app.controller("NavCtrl", ['$scope', 'Auth','$location','$rootScope', function($scope, Auth, $location, $rootScope){
+app.controller("NavCtrl", ['$scope', 'Auth','$location', function($scope, Auth, $location){
 	$scope.signedIn = Auth.isAuthenticated;
 	$scope.logout = Auth.logout;
 
@@ -71,24 +71,22 @@ app.controller("NavCtrl", ['$scope', 'Auth','$location','$rootScope', function($
 
 	$scope.$on('devise:login', function (e, user){
 	    $scope.user = user;
+	    $location.path('/students')
 	});
 
 	$scope.$on('devise:logout', function (e, user){
 	    $scope.user = {};
-	    $rootScope.loggedInUser = null;
 	    $location.path('/login')
 	});
 
 	$scope.login = function() {
 	    Auth.login($scope.user).then(function(){
-	    	$rootScope.loggedInUser = $scope.user;
 	      	$location.path('/students')
 	    });
 	};
 
 	$scope.register = function() {
 	    Auth.register($scope.user).then(function(){
-	    	$rootScope.loggedInUser = $scope.user;
 	    	$location.path('/students')
 	    });
 	};
@@ -132,21 +130,32 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 	
 }])
 
-app.run(['$rootScope', '$location', function($rootScope, $location) {
-	console.log("dsds")
-    $rootScope.$on( "$routeChangeStart", function(event, next, current) {
-    	console.log($rootScope)
-		if ($rootScope.loggedInUser == null) {
-			console.log(next.templateUrl)
-			// no logged user, redirect to /login
-			if ( next.templateUrl === "/templates/students/login.html") {
-				console.log("aaa")
-			}else if(next.templateUrl === "/templates/students/register.html"){
-
-			}else {
-				$location.path("/login");
-				console.log("bb")
-			}
-		}
-    });
+app.run(['$rootScope', '$location','Auth', function($rooAuth, $location, Auth) {
+	console.log(Auth.isAuthenticated())
+	if(!Auth.isAuthenticated()){
+		$location.path("/login");
+	}
+//     $rootScope.$on( "$routeChangeStart", function(event, next, current) {
+//     	console.log($rootScope)
+// 		if ($rootScope.loggedInUser == null) {
+// 			console.log("templates:" + next.templateUrl)
+// 			// no logged user, redirect to /login
+// 			if ( next.templateUrl === "/templates/students/login.html") {
+// 				console.log("login")
+// 				$location.path("/login")
+// 			}else if(next.templateUrl === "/templates/students/register.html"){
+// 				console.log("register")
+// 				$location.path("/register");
+// 			}else {
+// 				$location.path("/login");
+// 				console.log("bb")
+// 			}
+// 		}else{
+// 			if ( next.templateUrl === "/templates/students/login.html") {
+// 				$location.path("/")
+// 			}else if(next.templateUrl === "/templates/students/register.html"){
+// 				$location.path("/");
+// 			}
+// 		}
+//     });
 }]);
