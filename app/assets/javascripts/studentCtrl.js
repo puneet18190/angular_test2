@@ -57,7 +57,7 @@ app.controller('studentEditCtrl', ['$scope','Users','$location', '$routeParams',
 	}
 }])
 
-app.controller("NavCtrl", ['$scope', 'Auth','$location', function($scope, Auth, $location){
+app.controller("NavCtrl", ['$scope', 'Auth','$location','$rootScope', function($scope, Auth, $location, $rootScope){
 	$scope.signedIn = Auth.isAuthenticated;
 	$scope.logout = Auth.logout;
 
@@ -75,11 +75,14 @@ app.controller("NavCtrl", ['$scope', 'Auth','$location', function($scope, Auth, 
 
 	$scope.$on('devise:logout', function (e, user){
 	    $scope.user = {};
+	    $rootScope.loggedInUser = null;
+	    $location.path('/login')
 	});
 
 	$scope.login = function() {
 	    Auth.login($scope.user).then(function(){
-	      $location.path('/students')
+	    	$rootScope.loggedInUser = $scope.user;
+	      	$location.path('/students')
 	    });
 	};
 
@@ -127,3 +130,22 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 	});
 	
 }])
+
+app.run(['$rootScope', '$location', function($rootScope, $location) {
+	console.log("dsds")
+    $rootScope.$on( "$routeChangeStart", function(event, next, current) {
+    	console.log($rootScope)
+		if ($rootScope.loggedInUser == null) {
+			console.log(next.templateUrl)
+			// no logged user, redirect to /login
+			if ( next.templateUrl === "/templates/students/login.html") {
+				console.log("aaa")
+			}else if(next.templateUrl === "/templates/students/register.html"){
+
+			}else {
+				$location.path("/login");
+				console.log("bb")
+			}
+		}
+    });
+}]);

@@ -1,4 +1,5 @@
 class StudentsController < ApplicationController
+	before_filter :authenticate_user!, only: [:create, :upvote]
 	respond_to :html, :json
 
 	def index
