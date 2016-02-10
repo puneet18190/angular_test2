@@ -96,22 +96,35 @@ app.controller("NavCtrl", ['$scope', 'Auth','$location', function($scope, Auth, 
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
 	$routeProvider.when("/students",{
 		templateUrl: "/templates/students/index.html",
-		controller: "studentCtrl"
+		controller: "studentCtrl",
+		resolve:{
+			loggedIn: onlyLoggedIn
+		}
+		
 	});
 
 	$routeProvider.when("/students/new",{
 		templateUrl: "/templates/students/new.html",
-		controller: "studentNewCtrl"
+		controller: "studentNewCtrl",
+		resolve:{
+			loggedIn: onlyLoggedIn
+		}
 	});
 
 	$routeProvider.when("/students/:id",{
 		templateUrl: "/templates/students/show.html",
-		controller: "studentShowCtrl"
+		controller: "studentShowCtrl",
+		resolve:{
+			loggedIn: onlyLoggedIn
+		}
 	});
 
 	$routeProvider.when("/students/:id/edit",{
 		templateUrl: "/templates/students/edit.html",
-		controller: "studentEditCtrl"
+		controller: "studentEditCtrl",
+		resolve:{
+			loggedIn: onlyLoggedIn
+		}
 	});
 
 	$routeProvider.when("/login",{
@@ -130,13 +143,15 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 	
 }])
 
-app.run(['$rootScope', '$location','Auth', function($rooAuth, $location, Auth) {
-	console.log(Auth.isAuthenticated())
-	if(!Auth.isAuthenticated()){
-		$location.path("/login");
-	}
+// app.run(['$rootScope', '$location','Auth','$rootScope', function($rooAuth, $location, Auth,$rootScope) {
+// 	console.log(Auth.isAuthenticated())
+// 	if(!Auth.isAuthenticated()){
+// 		$location.path("/login");
+// 	}
 //     $rootScope.$on( "$routeChangeStart", function(event, next, current) {
-//     	console.log($rootScope)
+//     	console.log("===================")
+//     	console.log(next.data.auth)
+// 		console.log("===================")
 // 		if ($rootScope.loggedInUser == null) {
 // 			console.log("templates:" + next.templateUrl)
 // 			// no logged user, redirect to /login
@@ -158,4 +173,18 @@ app.run(['$rootScope', '$location','Auth', function($rooAuth, $location, Auth) {
 // 			}
 // 		}
 //     });
-}]);
+// }]);
+
+var onlyLoggedIn = function ($location,$q,Auth) {
+    var deferred = $q.defer();
+    console.log(Auth)
+    console.log($q)
+    console.log($location)
+    if (Auth.isAuthenticated()) {
+        deferred.resolve();
+    } else {
+        deferred.reject();
+        $location.url('/login');
+    }
+    return deferred.promise;
+};
